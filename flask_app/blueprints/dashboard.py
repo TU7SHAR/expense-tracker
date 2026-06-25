@@ -2,7 +2,7 @@ from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 from sqlalchemy import func
 from datetime import date, timedelta
-from app import db
+from extensions import db
 from models import Transaction, Category
 
 dashboard_bp = Blueprint('dashboard', __name__)

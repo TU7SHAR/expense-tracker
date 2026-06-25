@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 from sqlalchemy import func, extract
 from datetime import date, timedelta
-from app import db
+from extensions import db
 from models import Transaction, Category
 
 reports_bp = Blueprint('reports', __name__, url_prefix='/reports')
