@@ -29,14 +29,14 @@ def create_app(config_class=Config):
     with app.app_context():
         from models import User, Transaction, Category
         db.create_all()
-        _seed_categories(app)
+        _seed_categories()
 
     return app
 
 
-def _seed_categories(app):
+def _seed_categories():
     from models import Category
-    if Category.query.count() == 0:
+    if db.session.query(Category).count() == 0:
         default_categories = [
             Category(name='Food & Dining', icon='bi-cup-hot', color='#FF6384'),
             Category(name='Transportation', icon='bi-car-front', color='#36A2EB'),
