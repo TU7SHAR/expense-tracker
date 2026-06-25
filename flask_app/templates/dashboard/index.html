@@ -1,129 +1,102 @@
 {% extends "base.html" %}
-{% block title %}Dashboard - Expense Tracker{% endblock %}
+{% block title %}Overview - Expense Tracker{% endblock %}
 
 {% block content %}
-<div class="page-header d-flex justify-content-between align-items-center">
-    <h4><i class="bi bi-speedometer2 me-2"></i>Dashboard</h4>
-    <a href="{{ url_for('transactions.add') }}" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>Add Transaction
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Overview</h1>
+        <p class="page-subtitle">Your financial summary for this month</p>
+    </div>
+    <a href="{{ url_for('transactions.add') }}" class="btn-primary">
+        <i class="bi bi-plus"></i>
+        New Transaction
     </a>
 </div>
 
-<!-- Stats Cards -->
-<div class="row g-3 mb-4">
-    <div class="col-md-3 col-sm-6">
-        <div class="card stat-card income-card">
-            <div class="d-flex align-items-center">
-                <div class="stat-icon">
-                    <i class="bi bi-arrow-down-circle"></i>
-                </div>
-                <div class="ms-3">
-                    <p class="stat-label">Monthly Income</p>
-                    <p class="stat-value text-success">${{ "%.2f"|format(monthly_income) }}</p>
-                </div>
-            </div>
-        </div>
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <p class="stat-label">Income</p>
+        <p class="stat-value positive">${{ "%.2f"|format(monthly_income) }}</p>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card stat-card expense-card">
-            <div class="d-flex align-items-center">
-                <div class="stat-icon">
-                    <i class="bi bi-arrow-up-circle"></i>
-                </div>
-                <div class="ms-3">
-                    <p class="stat-label">Monthly Expenses</p>
-                    <p class="stat-value text-danger">${{ "%.2f"|format(monthly_expenses) }}</p>
-                </div>
-            </div>
-        </div>
+    <div class="stat-card">
+        <p class="stat-label">Expenses</p>
+        <p class="stat-value negative">${{ "%.2f"|format(monthly_expenses) }}</p>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card stat-card balance-card">
-            <div class="d-flex align-items-center">
-                <div class="stat-icon">
-                    <i class="bi bi-cash-coin"></i>
-                </div>
-                <div class="ms-3">
-                    <p class="stat-label">Monthly Balance</p>
-                    <p class="stat-value {% if balance >= 0 %}text-info{% else %}text-danger{% endif %}">${{ "%.2f"|format(balance) }}</p>
-                </div>
-            </div>
-        </div>
+    <div class="stat-card">
+        <p class="stat-label">Balance</p>
+        <p class="stat-value {% if balance >= 0 %}positive{% else %}negative{% endif %}">
+            ${{ "%.2f"|format(balance) }}
+        </p>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="card stat-card total-card">
-            <div class="d-flex align-items-center">
-                <div class="stat-icon">
-                    <i class="bi bi-piggy-bank"></i>
-                </div>
-                <div class="ms-3">
-                    <p class="stat-label">Total Balance</p>
-                    <p class="stat-value {% if total_balance >= 0 %}text-primary{% else %}text-danger{% endif %}">${{ "%.2f"|format(total_balance) }}</p>
-                </div>
-            </div>
-        </div>
+    <div class="stat-card">
+        <p class="stat-label">Total Savings</p>
+        <p class="stat-value info">${{ "%.2f"|format(total_balance) }}</p>
     </div>
 </div>
 
-<!-- Charts Row -->
-<div class="row g-3 mb-4">
-    <div class="col-md-8">
-        <div class="chart-card">
-            <h6><i class="bi bi-graph-up me-2"></i>Daily Spending (Last 7 Days)</h6>
-            <canvas id="dailyChart" height="200"></canvas>
-        </div>
+
+<!-- Charts -->
+<div class="charts-grid">
+    <div class="chart-container">
+        <h3>Spending this week</h3>
+        <canvas id="dailyChart" height="180"></canvas>
     </div>
-    <div class="col-md-4">
-        <div class="chart-card">
-            <h6><i class="bi bi-pie-chart me-2"></i>Expense Breakdown</h6>
-            {% if category_breakdown %}
-                <canvas id="categoryChart" height="200"></canvas>
-            {% else %}
-                <div class="empty-state">
-                    <i class="bi bi-pie-chart"></i>
-                    <p>No expense data yet</p>
-                </div>
-            {% endif %}
-        </div>
+    <div class="chart-container">
+        <h3>By category</h3>
+        {% if category_breakdown %}
+            <canvas id="categoryChart" height="200"></canvas>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-pie-chart"></i></div>
+                <p>No expense data yet</p>
+            </div>
+        {% endif %}
     </div>
 </div>
 
 <!-- Recent Transactions -->
-<div class="row">
-    <div class="col-12">
-        <div class="chart-card">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent Transactions</h6>
-                <a href="{{ url_for('transactions.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
-            </div>
-            {% if recent_transactions %}
-                {% for tx in recent_transactions %}
-                <div class="transaction-item">
-                    <div class="tx-icon" style="background-color: {{ tx.category.color }}20;">
+<div class="card">
+    <div class="card-header">
+        <span class="card-title">Recent transactions</span>
+        <a href="{{ url_for('transactions.index') }}" class="btn-ghost">View all <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        {% if recent_transactions %}
+            <div class="transactions-table">
+            {% for tx in recent_transactions %}
+                <div class="tx-row">
+                    <div class="tx-icon" style="background: {{ tx.category.color }}15;">
                         <i class="bi {{ tx.category.icon }}" style="color: {{ tx.category.color }};"></i>
                     </div>
                     <div class="tx-details">
                         <p class="tx-desc">{{ tx.description }}</p>
-                        <p class="tx-category">{{ tx.category.name }} &middot; {{ tx.date.strftime('%b %d, %Y') }}</p>
+                        <p class="tx-meta">{{ tx.category.name }} &middot; {{ tx.date.strftime('%b %d, %Y') }}</p>
                     </div>
                     <span class="tx-amount {{ tx.transaction_type }}">
                         {% if tx.transaction_type == 'income' %}+{% else %}-{% endif %}${{ "%.2f"|format(tx.amount) }}
                     </span>
+                    <div class="tx-actions"></div>
                 </div>
-                {% endfor %}
-            {% else %}
-                <div class="empty-state">
-                    <i class="bi bi-inbox"></i>
-                    <p>No transactions yet. Add your first one!</p>
-                </div>
-            {% endif %}
-        </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-inbox"></i></div>
+                <p>No transactions yet. Add your first one!</p>
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
 
+
 {% block scripts %}
 <script>
+Chart.defaults.color = '#8b8d97';
+Chart.defaults.borderColor = '#2a2b30';
+Chart.defaults.font.family = 'Inter';
+
 // Daily Spending Chart
 const dailyCtx = document.getElementById('dailyChart').getContext('2d');
 new Chart(dailyCtx, {
@@ -133,24 +106,30 @@ new Chart(dailyCtx, {
         datasets: [{
             label: 'Spending',
             data: {{ daily_values|tojson }},
-            backgroundColor: 'rgba(102, 126, 234, 0.6)',
-            borderColor: 'rgba(102, 126, 234, 1)',
+            backgroundColor: 'rgba(99, 102, 241, 0.5)',
+            borderColor: 'rgba(99, 102, 241, 0.8)',
             borderWidth: 1,
-            borderRadius: 6
+            borderRadius: 6,
+            borderSkipped: false
         }]
     },
     options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-            y: { beginAtZero: true, ticks: { callback: v => '$' + v } },
-            x: { grid: { display: false } }
+            y: {
+                beginAtZero: true,
+                grid: { color: '#1e1f24' },
+                ticks: { callback: v => '$' + v, font: { size: 11 } }
+            },
+            x: { grid: { display: false }, ticks: { font: { size: 11 } } }
         }
     }
 });
 
 {% if category_breakdown %}
-// Category Breakdown Chart
+// Category Chart
 const catCtx = document.getElementById('categoryChart').getContext('2d');
 new Chart(catCtx, {
     type: 'doughnut',
@@ -159,13 +138,19 @@ new Chart(catCtx, {
         datasets: [{
             data: {{ category_breakdown|map(attribute=2)|list|tojson }},
             backgroundColor: {{ category_breakdown|map(attribute=1)|list|tojson }},
-            borderWidth: 2
+            borderWidth: 0,
+            spacing: 2
         }]
     },
     options: {
         responsive: true,
+        maintainAspectRatio: false,
+        cutout: '72%',
         plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 8, font: { size: 11 } } }
+            legend: {
+                position: 'bottom',
+                labels: { boxWidth: 8, padding: 12, font: { size: 11 } }
+            }
         }
     }
 });

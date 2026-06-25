@@ -1,46 +1,57 @@
 {% extends "base.html" %}
-{% block title %}Login - Expense Tracker{% endblock %}
+{% block title %}Sign In - Expense Tracker{% endblock %}
 
-{% block content %}
-<div class="auth-wrapper">
-    <div class="auth-card">
-        <div class="text-center mb-4">
-            <i class="bi bi-wallet2 text-primary" style="font-size: 2.5rem;"></i>
-            <h2 class="mt-2">Welcome Back</h2>
-            <p class="text-muted">Sign in to manage your expenses</p>
+{% block auth_content %}
+<div class="auth-page">
+    <div class="auth-left">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <div class="logo-icon"><i class="bi bi-wallet2"></i></div>
+                <span class="logo-text">Midday</span>
+            </div>
+
+            <h1 class="auth-title">Welcome back</h1>
+            <p class="auth-subtitle">Sign in to your account to continue</p>
+
+            <form method="POST" class="auth-form" novalidate>
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    {{ form.email(class="form-control", placeholder="you@example.com") }}
+                    {% for error in form.email.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    {{ form.password(class="form-control", placeholder="Enter your password") }}
+                    {% for error in form.password.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-check">
+                    {{ form.remember(class="") }}
+                    <label>Remember me</label>
+                </div>
+
+                <button type="submit" class="auth-btn">Sign in</button>
+            </form>
+
+            <div class="auth-footer">
+                Don't have an account? <a href="{{ url_for('auth.signup') }}">Create one</a>
+            </div>
         </div>
-
-        <form method="POST" novalidate>
-            {{ form.hidden_tag() }}
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Email</label>
-                {{ form.email(class="form-control form-control-lg", placeholder="you@example.com") }}
-                {% for error in form.email.errors %}
-                    <div class="text-danger small mt-1">{{ error }}</div>
-                {% endfor %}
+    </div>
+    <div class="auth-right">
+        <div class="auth-feature">
+            <div class="auth-feature-icon">
+                <i class="bi bi-lightning"></i>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Password</label>
-                {{ form.password(class="form-control form-control-lg", placeholder="Enter your password") }}
-                {% for error in form.password.errors %}
-                    <div class="text-danger small mt-1">{{ error }}</div>
-                {% endfor %}
-            </div>
-
-            <div class="mb-3 form-check">
-                {{ form.remember(class="form-check-input") }}
-                <label class="form-check-label">Remember me</label>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-lg w-100">
-                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
-            </button>
-        </form>
-
-        <div class="text-center mt-3">
-            <p class="text-muted">Don't have an account? <a href="{{ url_for('auth.signup') }}" class="text-decoration-none">Sign up</a></p>
+            <h3>Track every dollar</h3>
+            <p>Get real-time insights into your spending patterns and take control of your finances.</p>
         </div>
     </div>
 </div>

@@ -1,57 +1,68 @@
 {% extends "base.html" %}
-{% block title %}Sign Up - Expense Tracker{% endblock %}
+{% block title %}Create Account - Expense Tracker{% endblock %}
 
-{% block content %}
-<div class="auth-wrapper">
-    <div class="auth-card">
-        <div class="text-center mb-4">
-            <i class="bi bi-wallet2 text-primary" style="font-size: 2.5rem;"></i>
-            <h2 class="mt-2">Create Account</h2>
-            <p class="text-muted">Start tracking your expenses today</p>
+{% block auth_content %}
+<div class="auth-page">
+    <div class="auth-left">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <div class="logo-icon"><i class="bi bi-wallet2"></i></div>
+                <span class="logo-text">Midday</span>
+            </div>
+
+            <h1 class="auth-title">Create account</h1>
+            <p class="auth-subtitle">Start tracking your expenses in seconds</p>
+
+            <form method="POST" class="auth-form" novalidate>
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    {{ form.username(class="form-control", placeholder="johndoe") }}
+                    {% for error in form.username.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    {{ form.email(class="form-control", placeholder="you@example.com") }}
+                    {% for error in form.email.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    {{ form.password(class="form-control", placeholder="Min. 6 characters") }}
+                    {% for error in form.password.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Confirm password</label>
+                    {{ form.confirm_password(class="form-control", placeholder="Re-enter password") }}
+                    {% for error in form.confirm_password.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="auth-btn">Create account</button>
+            </form>
+
+            <div class="auth-footer">
+                Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>
+            </div>
         </div>
-
-        <form method="POST" novalidate>
-            {{ form.hidden_tag() }}
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Username</label>
-                {{ form.username(class="form-control form-control-lg", placeholder="Choose a username") }}
-                {% for error in form.username.errors %}
-                    <div class="text-danger small mt-1">{{ error }}</div>
-                {% endfor %}
+    </div>
+    <div class="auth-right">
+        <div class="auth-feature">
+            <div class="auth-feature-icon">
+                <i class="bi bi-bar-chart-line"></i>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Email</label>
-                {{ form.email(class="form-control form-control-lg", placeholder="you@example.com") }}
-                {% for error in form.email.errors %}
-                    <div class="text-danger small mt-1">{{ error }}</div>
-                {% endfor %}
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Password</label>
-                {{ form.password(class="form-control form-control-lg", placeholder="Min. 6 characters") }}
-                {% for error in form.password.errors %}
-                    <div class="text-danger small mt-1">{{ error }}</div>
-                {% endfor %}
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Confirm Password</label>
-                {{ form.confirm_password(class="form-control form-control-lg", placeholder="Re-enter password") }}
-                {% for error in form.confirm_password.errors %}
-                    <div class="text-danger small mt-1">{{ error }}</div>
-                {% endfor %}
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-lg w-100">
-                <i class="bi bi-person-plus me-2"></i>Create Account
-            </button>
-        </form>
-
-        <div class="text-center mt-3">
-            <p class="text-muted">Already have an account? <a href="{{ url_for('auth.login') }}" class="text-decoration-none">Sign in</a></p>
+            <h3>Beautiful analytics</h3>
+            <p>Visualize your spending with charts and reports that make managing money effortless.</p>
         </div>
     </div>
 </div>
